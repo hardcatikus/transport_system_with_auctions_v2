@@ -1,0 +1,80 @@
+
+mas transport_system_with_auctions {
+
+    
+    
+	//auctioneer
+	agent auctioneer{
+		join: auction_room
+		focus: auction_room.auction_manager, auction_room.notice_board,
+		auction_room.bids_collector
+	}
+	
+
+	//buses
+    agent bus1 : bus.asl {
+    	join: auction_room, bus_calculator
+    	focus: auction_room.notice_board, bus_calculator.bid_calculator,
+    	bus_calculator.path_builder, auction_room.bids_collector
+    	beliefs: point("A"),
+    			 speed(60),
+    			 capacity(4),
+    			 weight_a(60),
+    			 weight_b(20),
+    			 weight_g(20)
+    }
+    
+    agent bus2 : bus.asl {
+    	join: auction_room, bus_calculator
+    	focus:auction_room.notice_board, bus_calculator.bid_calculator,
+    	bus_calculator.path_builder, auction_room.bids_collector
+    	beliefs: point("B"),
+    			 speed(55),
+    			 capacity(2),
+    			 weight_a(60),
+    			 weight_b(30),
+    			 weight_g(10)
+    }
+    
+    //passengers
+    agent passenger1 : passenger.asl {
+    	join: auction_room
+    	focus: auction_room.notice_board
+    	beliefs: price(320), 
+    			 start_point("B"),
+				 end_point("E"),
+    			 start_time("10:00")    			 
+    }
+    
+    agent passenger2 : passenger.asl {
+    	join: auction_room
+    	focus: auction_room.notice_board
+    	beliefs: price(150), 
+    			 start_point("A"),
+				 end_point("B"),
+    			 start_time("10:05")
+    }
+    
+    agent passenger3 : passenger.asl {
+    	join: auction_room
+    	focus: auction_room.notice_board
+    	beliefs: price(200), 
+    			 start_point("A"),
+				 end_point("E"),
+    			 start_time("10:03")
+    }
+    
+    workspace auction_room { 
+    	artifact auction_manager: tools_of_auctioneer.AuctionManager
+    	artifact notice_board: tools_of_auctioneer.NoticeBoard
+    	artifact bids_collector: tools_of_auctioneer.BidsCollector
+	}
+	
+	workspace bus_calculator { 
+    	artifact bid_calculator: tools_of_bus.BidCalculator
+    	artifact path_builder: tools_of_bus.PathBuilder
+	}
+
+
+}
+
